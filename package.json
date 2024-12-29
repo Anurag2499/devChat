@@ -1,0 +1,23 @@
+{
+  "name": "devchat",
+  "version": "1.0.0",
+  "description": "devchat for developers",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "nodejs",
+    "backend",
+    "javascript",
+    "expressjs",
+    "reactjs",
+    "fullstack"
+  ],
+  "author": "Anurag Singh Dangi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
