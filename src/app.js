@@ -1,26 +1,30 @@
 const express = require('express');
-
+const connectDB = require('./config/database');
+const User = require('./models/users');
 const app = express();
 
-app.use('/admin', (req, res, next) => {
-  //Logic to check if the requesr is authorized
-  const token = 'xyz';
-  const isAuthorizedAdmin = token === 'xyz';
-  if (!isAuthorizedAdmin) {
-    res.status(401).send('You are not authorized to see this data');
-  } else {
-    next();
-  }
+app.use(express.json());
+
+app.post('/signup', async (req, res) => {
+  console.log(req.body);
+  // const user = new User({
+  //   firstName: 'Anurag',
+  //   lastName: 'Dangi',
+  //   emailId: 'anurag@gmail.com',
+  //   age: 26,
+  //   gender: 'male',
+  // });
+  // await user.save();
+  // res.send('User created successfully');
 });
 
-app.get('/admin/getAlldata', (req, res) => {
-  res.send('Here is the data that only admin can see');
-});
-
-app.get('/admin/deleteUser', (req, res) => {
-  res.send('User deleted successfully');
-});
-
-app.listen(7777, () => {
-  console.log('listening on port 7777');
-});
+connectDB()
+  .then(() => {
+    console.log('Database connected successfully');
+    app.listen(7777, () => {
+      console.log('listening on port 7777');
+    });
+  })
+  .catch((err) => {
+    console.error('Database connection error');
+  });
