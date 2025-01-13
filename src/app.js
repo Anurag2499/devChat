@@ -7,15 +7,15 @@ app.use(express.json());
 
 app.post('/signup', async (req, res) => {
   console.log(req.body);
-  // const user = new User({
-  //   firstName: 'Anurag',
-  //   lastName: 'Dangi',
-  //   emailId: 'anurag@gmail.com',
-  //   age: 26,
-  //   gender: 'male',
-  // });
-  // await user.save();
-  // res.send('User created successfully');
+
+  //Creating a new instance of User model
+  const user = new User(req.body);
+  try {
+    await user.save();
+    res.send('User created successfully');
+  } catch (err) {
+    res.status(400).send('Unable to save to database: ' + err);
+  }
 });
 
 connectDB()
