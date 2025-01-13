@@ -5,6 +5,7 @@ const app = express();
 
 app.use(express.json());
 
+//post user data in database
 app.post('/signup', async (req, res) => {
   console.log(req.body);
 
@@ -15,6 +16,32 @@ app.post('/signup', async (req, res) => {
     res.send('User created successfully');
   } catch (err) {
     res.status(400).send('Unable to save to database: ' + err);
+  }
+});
+
+//Get user data using emailId
+app.get('/user', async (req, res) => {
+  try {
+    const userEmail = req.body.emailId;
+    console.log(userEmail);
+    const users = await User.findOne({ emailId: userEmail });
+    console.log(users);
+    if (users.length === 0) {
+      res.send('No user found');
+    }
+    res.send(users);
+  } catch (err) {
+    res.status(400).send('Something went wrong');
+  }
+});
+
+//Feed API - GET /feed - get all the users from database
+app.get('/feed', async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (err) {
+    res.status(400).send('Something went wrong');
   }
 });
 
