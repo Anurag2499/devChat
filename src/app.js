@@ -3,7 +3,7 @@ const connectDB = require('./config/database');
 const User = require('./models/users');
 const app = express();
 
-app.use(express.json());
+app.use(express.json()); //it will convert the req.body into the json object.
 
 //post user data in database
 app.post('/signup', async (req, res) => {
@@ -92,7 +92,7 @@ app.patch('/user', async (req, res) => {
       res.send('User not found');
     }
   } catch (err) {
-    res.status(400).send('Something went wrong');
+    res.status(400).send('Something went wrong: ' + err.message);
   }
 });
 
