@@ -99,6 +99,7 @@ app.patch('/user', async (req, res) => {
 connectDB()
   .then(() => {
     console.log('Database connected successfully');
+    //app will be listened at port 7777.
     app.listen(7777, () => {
       console.log('listening on port 7777');
     });
