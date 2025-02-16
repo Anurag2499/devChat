@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
+      minlength: 4,
     },
     emailId: {
       type: String,
@@ -19,9 +20,17 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+      required: true,
+      minlength: 6, // Minimum length of 8 characters
+      match: [
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+        'Password must be at least 8 characters long, include a letter, a number, and a special character.',
+      ],
     },
     age: {
       type: Number,
+      min: 18, // Minimum age required
+      max: 60, // Age cannot be greater than 60
     },
     gender: {
       type: String,
