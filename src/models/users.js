@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const validator = require('validator');
 //Created a new user schema
 const userSchema = new mongoose.Schema(
   {
@@ -17,15 +17,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error('Email is invalid');
+        }
+      },
     },
     password: {
       type: String,
       required: true,
-      minlength: 6, // Minimum length of 8 characters
-      match: [
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
-        'Password must be at least 8 characters long, include a letter, a number, and a special character.',
-      ],
+      minlength: 6, // Minimum length of 6 characters
     },
     age: {
       type: Number,
