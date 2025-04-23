@@ -4,8 +4,13 @@ const User = require('./models/users');
 const app = express();
 const { validateSignUpData } = require('./utils/validation');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const { userAuth } = require('./middlewares/auth');
 
 app.use(express.json()); //it will convert the req.body into the json object.
+// Use cookie-parser middleware
+app.use(cookieParser());
 
 //post user data in database
 app.post('/signup', async (req, res) => {
@@ -43,7 +48,19 @@ app.post('/login', async (req, res) => {
       throw new Error('User not found');
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    //checkin wheather the password is valid or not.
     if (isPasswordValid) {
+      //generate token
+      const token = jwt.sign({ _id: user._id }, 'DEV@Chat$786', {
+        expiresIn: '1h',
+      });
+      console.log(token);
+
+      //Add the token to the cookie and send the response back to the user.
+      res.cookie('token', token, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+      });
       res.send('User logged in successfully');
     } else {
       throw new Error('Invalid password');
@@ -53,91 +70,26 @@ app.post('/login', async (req, res) => {
   }
 });
 
-//Get user data using emailId
-// app.get('/user', async (req, res) => {
-//   try {
-//     const userEmail = req.body.emailId;
-//     console.log(userEmail);
-//     const users = await User.findOne({ emailId: userEmail });
-//     console.log(users);
-//     if (users.length === 0) {
-//       res.send('No user found');
-//     }
-//     res.send(users);
-//   } catch (err) {
-//     res.status(400).send('Something went wrong');
-//   }
-// });
-
-// GET /user by id
-app.get('/user', async (req, res) => {
+// In this we have added userAuth middleware to protect the route
+app.get('/profile', userAuth, async (req, res) => {
   try {
-    const userID = req.body._id;
-    console.log(userID);
-    const users = await User.findById({ _id: userID });
-    console.log(users);
-    if (users.length === 0) {
-      res.send('No user found');
+    const user = req.user; //user is attached to the request object in the userAuth middleware
+    if (!user) {
+      throw new Error('User not found');
     }
-    res.send(users);
+    res.send(user);
   } catch (err) {
-    res.status(400).send('Something went wrong');
+    res.status(400).send('Error' + err);
   }
 });
 
-//Feed API - GET /feed - get all the users from database
-app.get('/feed', async (req, res) => {
+app.post('/getConnectionRequest', userAuth, async (req, res) => {
   try {
-    const users = await User.find({});
-    res.send(users);
+    console.log('inside getConnectionRequest');
+
+    res.send('Connection request sent successfully');
   } catch (err) {
-    res.status(400).send('Something went wrong');
-  }
-});
-
-//Delete API
-app.delete('/user', async (req, res) => {
-  try {
-    const userId = req.body.userId;
-    if (userId) {
-      await User.findByIdAndDelete(userId);
-      res.send('User deleted successfully');
-    } else {
-      res.send('User not found');
-    }
-  } catch (err) {
-    res.status(400).send('Something went wrong');
-  }
-});
-
-// Update API (Patch)
-app.patch('/user/:userId', async (req, res) => {
-  try {
-    const userId = req.params?.userId;
-    const data = req.body;
-
-    const ALLOWED_FIELDS = ['password', 'age', 'about', 'gender', 'skills'];
-
-    const isUpdatedAllowed = Object.keys(data).every((field) =>
-      ALLOWED_FIELDS.includes(field)
-    );
-    if (!isUpdatedAllowed) {
-      // res.status(400).send('Invalid fields to update');
-      throw new Error('Invalid fields to update');
-    }
-
-    console.log(data);
-    if (userId) {
-      const userdata = await User.findByIdAndUpdate({ _id: userId }, data, {
-        returnDocument: 'before',
-      });
-      console.log(userdata);
-      res.send('User updated successfully');
-    } else {
-      res.send('User not found');
-    }
-  } catch (err) {
-    res.status(400).send('Something went wrong: ' + err.message);
+    res.status(400).send('Error-' + err);
   }
 });
 
