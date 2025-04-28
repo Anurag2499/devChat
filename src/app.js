@@ -11,8 +11,8 @@ app.use(express.json()); //it will convert the req.body into the json object.
 app.use(cookieParser());
 
 app.use('/', authRouter); //authRouter will handle all the routes which are starting with /auth
-app.use('/', requestRouter); //requestRouter will handle all the routes which are starting with /request
 app.use('/', profileRouter); //profileRouter will handle all the routes which are starting with /profile
+app.use('/', requestRouter); //requestRouter will handle all the routes which are starting with /request
 
 connectDB()
   .then(() => {

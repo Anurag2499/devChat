@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'This is the default about of the user.',
     },
+    photoUrl: {
+      type: String,
+      default:
+        'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
+    },
   },
   { timestamps: true }
 );

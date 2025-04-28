@@ -12,11 +12,9 @@ const userAuth = async (req, res, next) => {
 
     const decodedObj = await jwt.verify(token, 'DEV@Chat$786');
     const { _id } = decodedObj;
-    console.log(_id);
     //find the user in the database using the id from the token
 
     const user = await User.findById({ _id });
-    console.log(user);
     if (!user) {
       throw new Error('User not found by the id.. in the token');
     }
