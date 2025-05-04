@@ -6,6 +6,7 @@ const app = express();
 const authRouter = require('./routes/auth');
 const requestRouter = require('./routes/request');
 const profileRouter = require('./routes/profile');
+const userRouter = require('./routes/user');
 
 app.use(express.json()); //it will convert the req.body into the json object.
 app.use(cookieParser());
@@ -13,6 +14,7 @@ app.use(cookieParser());
 app.use('/', authRouter); //authRouter will handle all the routes which are starting with /auth
 app.use('/', profileRouter); //profileRouter will handle all the routes which are starting with /profile
 app.use('/', requestRouter); //requestRouter will handle all the routes which are starting with /request
+app.use('/', userRouter); //userRouter will handle all the routes which are starting with /user
 
 connectDB()
   .then(() => {

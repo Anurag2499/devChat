@@ -58,4 +58,43 @@ requestRouter.post(
   }
 );
 
+requestRouter.post(
+  '/request/review/:status/:requestId',
+  userAuth,
+  async (req, res) => {
+    const loggedInUser = req.user;
+    const { status, requestId } = req.params; //get the status and requestId from the params
+
+    const allowedStatus = ['accepted', 'rejected'];
+    if (!allowedStatus.includes(status)) {
+      return res
+        .status(400)
+        .json({ messsage: 'Invalid status type - ' + status });
+    }
+    //loggedInUser means "toUserId" in the connectionRequest.
+    //status will be interested always , if it is other than it will be ignored.
+    //requestId will be the _id in the connectionRequest.
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId: loggedInUser._id,
+      status: 'interested',
+    });
+    if (!connectionRequest) {
+      return res
+        .status(400)
+        .json({
+          message: 'Connection request not found or already accepted/rejected',
+        });
+    }
+
+    connectionRequest.status = status; //update the status of the connection request
+    const data = await connectionRequest.save(); //save the connection request in the database
+    res.status(200).json({
+      message: `Connection request ${status} successfully`,
+      data: data,
+    });
+  }
+);
+
 module.exports = requestRouter;
