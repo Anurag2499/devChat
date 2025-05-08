@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/database');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const app = express();
 
 const authRouter = require('./routes/auth');
@@ -8,6 +9,7 @@ const requestRouter = require('./routes/request');
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
 
+app.use(cors()); //it will allow the cross-origin requests.
 app.use(express.json()); //it will convert the req.body into the json object.
 app.use(cookieParser());
 
