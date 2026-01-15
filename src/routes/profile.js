@@ -4,6 +4,18 @@ const { userAuth } = require('../middlewares/auth');
 const { validateEditProfileData } = require('../utils/validation');
 const bcrypt = require('bcrypt');
 const User = require('../models/users'); //importing the user model
+const e = require('express');
+
+profileRouter.get('/', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '1800');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'PUT, POST, GET, DELETE, PATCH, OPTIONS'
+  );
+});
 
 // In this we have added userAuth middleware to protect the route
 profileRouter.get('/profile/view', userAuth, async (req, res) => {
@@ -29,6 +41,18 @@ profileRouter.patch('/profile/edit', userAuth, async (req, res) => {
       loggedInUser[key] = req.body[key];
     });
 
+    if (
+      loggedInUser.firstName.length < 4 ||
+      loggedInUser.firstName.length > 20
+    ) {
+      throw new Error('First name should be between 4 to 20 characters');
+    } else if (
+      loggedInUser.lastName.length < 4 ||
+      loggedInUser.lastName.length > 20
+    ) {
+      throw new Error('Last name should be between 4 to 20 characters');
+    }
+
     await loggedInUser.save(); //save the updated user in the database
 
     res.json({
@@ -44,7 +68,6 @@ profileRouter.patch('/profile/change-password', userAuth, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const loggedInUser = req.user;
-
     const isOldPasswordValid = await loggedInUser.validatePassword(oldPassword); //this is the mongoose method to validate the password.
 
     if (!isOldPasswordValid) {

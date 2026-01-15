@@ -8,11 +8,11 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
-      minlength: 4,
+      // minlength: 4,
     },
     lastName: {
       type: String,
-      minlength: 4,
+      // minlength: 4,
     },
     emailId: {
       type: String,
@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      min: 18, // Minimum age required
-      max: 60, // Age cannot be greater than 60
+      // min: 18, // Minimum age required
+      // max: 60, // Age cannot be greater than 60
     },
     gender: {
       type: String,

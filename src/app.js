@@ -9,7 +9,24 @@ const requestRouter = require('./routes/request');
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
 
-app.use(cors()); //it will allow the cross-origin requests.
+app.options(
+  '*',
+  cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+);
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173', //this is the origin of the client side application.
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true, //this will allow the cookies to be sent from the client side application.
+    optionSuccessStatus: 200,
+  })
+); //it will allow the cross-origin requests.
+
 app.use(express.json()); //it will convert the req.body into the json object.
 app.use(cookieParser());
 

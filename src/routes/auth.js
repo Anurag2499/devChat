@@ -13,7 +13,7 @@ authRouter.post('/signup', async (req, res) => {
     validateSignUpData(req);
 
     //Encrpting the data
-    const { firstName, lastName, emailId, password } = req.body;
+    const { firstName, lastName, emailId, password, photoUrl } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     console.log(passwordHash);
 
@@ -26,7 +26,15 @@ authRouter.post('/signup', async (req, res) => {
     });
 
     await user.save();
-    res.send('User created successfully');
+    //generate token
+    const token = await user.getJWT(); //this is the mongoose method to create the token.
+    console.log(token);
+
+    //Add the token to the cookie and send the response back to the user.
+    res.cookie('token', token, {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    });
+    res.json({ message: 'User created successfully', data: user });
   } catch (err) {
     res.status(400).send('Unable to save to database: ' + err);
   }
@@ -53,12 +61,14 @@ authRouter.post('/login', async (req, res) => {
       res.cookie('token', token, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
       });
-      res.send('User logged in successfully');
+      res.send(user); //send the user data back to the client.
     } else {
       throw new Error('Invalid password');
     }
   } catch (err) {
-    res.status(400).send('Error' + err);
+    res.status(400).json({
+      message: err.message,
+    });
   }
 });
 

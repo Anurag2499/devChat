@@ -15,11 +15,11 @@ userRouter.get('/user/requests/review', userAuth, async (req, res) => {
       status: 'interested',
     }).populate('fromUserId', USER_SAFEDATA);
 
-    const data = connectionRequest.map((request) => request.fromUserId);
+    // const data = connectionRequest.map((request) => request.fromUserId);
 
     res.json({
       message: 'Data fetched successfully',
-      data: data,
+      data: connectionRequest,
     });
   } catch (err) {
     return res.status(400).send('Error: ' + err.message);
