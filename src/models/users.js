@@ -53,10 +53,10 @@ const userSchema = new mongoose.Schema(
     photoUrl: {
       type: String,
       default:
-        'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
+        'https://png.pngtree.com/png-vector/20240121/ourmid/pngtree-a-school-boy-white-background-png-image_11510916.png',
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.index({ firstName: 1 });
@@ -75,7 +75,7 @@ userSchema.methods.validatePassword = async function (passwordInputByUser) {
 
   const isPasswordValid = await bcrypt.compare(
     passwordInputByUser,
-    hashPassword
+    hashPassword,
   );
   return isPasswordValid;
 };
