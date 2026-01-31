@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 const { validateSignUpData } = require('../utils/validation');
+require('dotenv').config();
 
 const userAuth = async (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ const userAuth = async (req, res, next) => {
       return res.status(401).send('Please Login!!');
     }
 
-    const decodedObj = await jwt.verify(token, 'DEV@Chat$786');
+    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodedObj;
     //find the user in the database using the id from the token
 

@@ -3,6 +3,7 @@ const ConnectionRequest = require('../models/connectionRequest'); //importing th
 const requestRouter = express.Router();
 const { userAuth } = require('../middlewares/auth');
 const User = require('../models/users');
+const sendEmail = require('../utils/sendEmail');
 
 requestRouter.post(
   '/request/send/:status/:userId',
@@ -11,6 +12,7 @@ requestRouter.post(
     try {
       const toUserId = req.params.userId; //the user id to whom the request is sent
       const fromUserId = req.user._id; //the user id who is sending the request
+      const fromUser = req.user.firstName;
       const status = req.params.status; //the status of the request
 
       const allowedStatus = ['ignored', 'interested'];
@@ -40,7 +42,7 @@ requestRouter.post(
           message: 'User not found',
         });
       }
-      //Save the connection request in the database
+      //Save the connection resuest in the database
       const connectionRequest = new ConnectionRequest({
         fromUserId,
         toUserId,
@@ -48,6 +50,16 @@ requestRouter.post(
       });
 
       const data = await connectionRequest.save(); //save the connection request in the database
+      console.log('Connection Request Data - ', data);
+      const emailRes = await sendEmail.run(
+        'A new connection request from ' + fromUser + '!',
+        toUser.firstName +
+          ', you have a new connection request on DevChat from ' +
+          fromUser +
+          '. Log in to your account to respond to the request.',
+      );
+      console.log('Email sent status - ', emailRes);
+
       res.status(200).json({
         message: `Connection request sent successfully - ${status}`,
         data: data,
@@ -55,7 +67,7 @@ requestRouter.post(
     } catch (err) {
       res.status(400).send('Error-' + err);
     }
-  }
+  },
 );
 
 requestRouter.post(
@@ -81,11 +93,9 @@ requestRouter.post(
       status: 'interested',
     });
     if (!connectionRequest) {
-      return res
-        .status(400)
-        .json({
-          message: 'Connection request not found or already accepted/rejected',
-        });
+      return res.status(400).json({
+        message: 'Connection request not found or already accepted/rejected',
+      });
     }
 
     connectionRequest.status = status; //update the status of the connection request
@@ -94,7 +104,7 @@ requestRouter.post(
       message: `Connection request ${status} successfully`,
       data: data,
     });
-  }
+  },
 );
 
 module.exports = requestRouter;

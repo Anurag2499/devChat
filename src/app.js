@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
 
+require('dotenv').config();
+
 const authRouter = require('./routes/auth');
 const requestRouter = require('./routes/request');
 const profileRouter = require('./routes/profile');
@@ -15,7 +17,7 @@ app.options(
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
-  })
+  }),
 );
 
 app.use(
@@ -24,7 +26,7 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true, //this will allow the cookies to be sent from the client side application.
     optionSuccessStatus: 200,
-  })
+  }),
 ); //it will allow the cross-origin requests.
 
 app.use(express.json()); //it will convert the req.body into the json object.
@@ -35,12 +37,13 @@ app.use('/', profileRouter); //profileRouter will handle all the routes which ar
 app.use('/', requestRouter); //requestRouter will handle all the routes which are starting with /request
 app.use('/', userRouter); //userRouter will handle all the routes which are starting with /user
 
+// console.log('Connecting to database...' + process.env.PORT);
 connectDB()
   .then(() => {
     console.log('Database connected successfully');
     //app will be listened at port 7777.
-    app.listen(7777, () => {
-      console.log('listening on port 7777');
+    app.listen(process.env.PORT, () => {
+      console.log(`listening on port ${process.env.PORT}`);
     });
   })
   .catch((err) => {
