@@ -3,13 +3,17 @@ const connectDB = require('./config/database');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
+const http = require('http');
 
 require('dotenv').config();
+require('./utils/cronJob'); //importing the cron job
 
 const authRouter = require('./routes/auth');
 const requestRouter = require('./routes/request');
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
+const { initializeSocket } = require('./utils/socket');
+const chatRouter = require('./routes/chat');
 
 app.options(
   '*',
@@ -36,13 +40,17 @@ app.use('/', authRouter); //authRouter will handle all the routes which are star
 app.use('/', profileRouter); //profileRouter will handle all the routes which are starting with /profile
 app.use('/', requestRouter); //requestRouter will handle all the routes which are starting with /request
 app.use('/', userRouter); //userRouter will handle all the routes which are starting with /user
+app.use('/', chatRouter); //chatRouter will handle all the routes which are starting with /chat
+
+const server = http.createServer(app);
+initializeSocket(server); //initialize the socket connection
 
 // console.log('Connecting to database...' + process.env.PORT);
 connectDB()
   .then(() => {
     console.log('Database connected successfully');
     //app will be listened at port 7777.
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);
     });
   })
