@@ -20,6 +20,11 @@ const chatSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   ],
   messages: [messageSchema],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 60 * 60 * 24, // ⏰ 24 hours in seconds
+  },
 });
 
 const Chat = new mongoose.model('Chat', chatSchema); //creating a new model for chat

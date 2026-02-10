@@ -22,7 +22,7 @@ cron.schedule('* 8 * * *', async () => {
       .populate('fromUserId toUserId');
 
     const listOfEmails = [
-      ...new Set(pendingRequests.map((req) => req.toUserId.email)),
+      ...new Set(pendingRequests.map((req) => req.toUserId.emailId)),
     ];
     console.log('List of emails to send cron job - ', listOfEmails);
 
