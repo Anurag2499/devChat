@@ -6,7 +6,7 @@ const app = express();
 const http = require('http');
 
 require('dotenv').config();
-require('./utils/cronJob'); //importing the cron job
+// require('./utils/cronJob'); //importing the cron job
 
 const authRouter = require('./routes/auth');
 const requestRouter = require('./routes/request');
@@ -54,6 +54,7 @@ connectDB()
       console.log(`listening on port ${process.env.PORT}`);
     });
   })
+
   .catch((err) => {
     console.error('Database connection error');
   });
