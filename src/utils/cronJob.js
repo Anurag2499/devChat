@@ -24,7 +24,7 @@ cron.schedule('* 8 * * *', async () => {
     const listOfEmails = [
       ...new Set(pendingRequests.map((req) => req.toUserId.emailId)),
     ];
-    console.log('List of emails to send cron job - ', listOfEmails);
+    // console.log('List of emails to send cron job - ', listOfEmails);
 
     for (const email of listOfEmails) {
       try {

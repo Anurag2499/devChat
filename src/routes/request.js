@@ -50,7 +50,7 @@ requestRouter.post(
       });
 
       const data = await connectionRequest.save(); //save the connection request in the database
-      console.log('Connection Request Data - ', data);
+      // console.log('Connection Request Data - ', data);
       const emailRes = await sendEmail.run(
         'A new connection request from ' + fromUser + '!',
         toUser.firstName +
@@ -58,7 +58,7 @@ requestRouter.post(
           fromUser +
           '. Log in to your account to respond to the request.',
       );
-      console.log('Email sent status - ', emailRes);
+      // console.log('Email sent status - ', emailRes);
 
       res.status(200).json({
         message: `Connection request sent successfully - ${status}`,

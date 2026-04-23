@@ -39,8 +39,6 @@ userRouter.get('/user/connections', userAuth, async (req, res) => {
       .populate('fromUserId', USER_SAFEDATA)
       .populate('toUserId', USER_SAFEDATA);
 
-    console.log('connectionRequests', connectionRequests);
-
     //  IMP logic to get the connections of the loggedIn user
     const data = connectionRequests.map((row) => {
       if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {

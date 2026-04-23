@@ -15,7 +15,6 @@ authRouter.post('/signup', async (req, res) => {
     //Encrpting the data
     const { firstName, lastName, emailId, password, photoUrl } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
-    console.log(passwordHash);
 
     //Creating a new instance of User model
     const user = new User({
@@ -28,7 +27,7 @@ authRouter.post('/signup', async (req, res) => {
     await user.save();
     //generate token
     const token = await user.getJWT(); //this is the mongoose method to create the token.
-    console.log(token);
+    // console.log(token);
 
     //Add the token to the cookie and send the response back to the user.
     res.cookie('token', token, {
@@ -55,7 +54,7 @@ authRouter.post('/login', async (req, res) => {
     if (isPasswordValid) {
       //generate token
       const token = await user.getJWT(); //this is the mongoose method to create the token.
-      console.log(token);
+      // console.log(token);
 
       //Add the token to the cookie and send the response back to the user.
       res.cookie('token', token, {
